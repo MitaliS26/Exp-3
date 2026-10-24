@@ -1,0 +1,73 @@
+Name: Build and deploy
+
+public class StudentResult {
+    private final String name;
+    private final int[] marks;
+    private static final int PASS_MARK = 35;
+    private static final int MAX_MARK = 100;
+
+    public StudentResult(String name, int[] marks) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Student name cannot be empty.");
+        }
+
+        if (marks == null || marks.length == 0) {
+            throw new IllegalArgumentException("At least one subject mark is required.");
+        }
+
+        validateMarks(marks);
+        this.name = name.trim();
+        this.marks = marks.clone();
+    }
+
+    private void validateMarks(int[] values) {
+        for (int mark : values) {
+            if (mark < 0 || mark > MAX_MARK) {
+                throw new IllegalArgumentException("Marks must be between 0 and 100.");
+            }
+        }
+    }
+
+    public int getTotal() {
+        int total = 0;
+        for (int mark : marks) {
+            total += mark;
+        }
+        return total;
+    }
+
+    public double getPercentage() {
+        return (double) getTotal() / marks.length;
+    }
+
+    public boolean hasPassed() {
+        for (int mark : marks) {
+            if (mark < PASS_MARK) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public String getGrade() {
+        if (!hasPassed()) return "F";
+        double percentage = getPercentage();
+        if (percentage >= 90) return "A+";
+        if (percentage >= 80) return "A";
+        if (percentage >= 70) return "B";
+        if (percentage >= 60) return "C";
+        if (percentage >= 50) return "D";
+        return "E";
+    }
+
+    public void displayResult() {
+        System.out.println("Student Result Summary");
+        System.out.println("----------------------");
+        System.out.println("Student: " + name);
+        System.out.println("Subjects: " + marks.length);
+        System.out.println("Total: " + getTotal() + "/" + (marks.length * MAX_MARK));
+        System.out.printf("Percentage: %.2f%%%n", getPercentage());
+        System.out.println("Result: " + (hasPassed() ? "PASS" : "FAIL"));
+        System.out.println("Grade: " + getGrade());
+    }
+}
